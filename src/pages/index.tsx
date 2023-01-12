@@ -1,3 +1,4 @@
+import NextLink from 'next/link'
 import {
   Link as ChakraLink,
   Text,
@@ -11,7 +12,6 @@ import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
 import { Hero } from '../components/Hero'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
 import { CTA } from '../components/CTA'
 import { Footer } from '../components/Footer'
 
@@ -42,10 +42,16 @@ const Index = () => (
             Next.js <LinkIcon />
           </ChakraLink>
         </ListItem>
+        <ListItem>
+          <ListIcon as={CheckCircleIcon} color="green.500" />
+          <ChakraLink as={NextLink} href="/group/new">
+            Create new group?
+          </ChakraLink>{' '}
+          <LinkIcon />
+        </ListItem>
       </List>
     </Main>
 
-    <DarkModeSwitch />
     <Footer>
       <Text>Next ❤️ Chakra</Text>
     </Footer>
