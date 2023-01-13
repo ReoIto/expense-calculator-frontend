@@ -1,6 +1,7 @@
 const Const = {
   API: {
-    CREATE_NEW_GROUP: '/groups',
+    CREATE_NEW_GROUP_PATH: '/groups',
+    SHOW_GROUP_PATH: '/groups/:id',
   },
 }
 

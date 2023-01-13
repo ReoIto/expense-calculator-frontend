@@ -1,7 +1,5 @@
-import { GetServerSideProps } from 'next'
-
 import NewGroupForm from '@/components/NewGroupForm'
-import { Container, Center, Button } from '@chakra-ui/react'
+import { Container, Center } from '@chakra-ui/react'
 
 const New = () => {
   return (
