@@ -58,7 +58,7 @@ const NewGroupForm = () => {
       users: data.users,
     }
     const JSONdata = JSON.stringify(postData)
-    const apiUrlBase = Utils.getApiUrlBase()
+    const endPoint = `${Utils.getApiUrlBase()}${Const.API.CREATE_NEW_GROUP}`
     const options = {
       method: 'POST',
       headers: {
@@ -67,13 +67,23 @@ const NewGroupForm = () => {
       body: JSONdata,
     }
 
-    await fetch(`${apiUrlBase}${Const.API.CREATE_NEW_GROUP}`, {
+    console.log(`endPoint: ${endPoint}`)
+    console.log(`options.method: ${options.method}`)
+    console.log(`options.headers: ${JSON.stringify(options.headers)}`)
+    console.log(`options.body: ${options.body}`)
+
+    const res = await fetch(endPoint, {
       method: options.method,
       headers: options.headers,
       body: options.body,
     })
-      .then((res) => res.json())
-      .catch((e) => console.log(e))
+    const result = await res.json()
+    if (result.success) {
+      console.log('result: success!')
+      console.log({ result })
+    } else {
+      console.log('result: failure!')
+    }
   }
 
   const renderFormErrorMessage = (message: string) => {
