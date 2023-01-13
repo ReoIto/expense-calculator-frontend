@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
 import { FormErrorMessage } from '@chakra-ui/react'
 import {
@@ -14,6 +15,7 @@ import Utils from '@/utils/utils'
 import Const from '@/utils/constants'
 
 const NewGroupForm = () => {
+  const router = useRouter()
   type InputValues = {
     group: {
       name: string
@@ -57,33 +59,22 @@ const NewGroupForm = () => {
       },
       users: data.users,
     }
-    const JSONdata = JSON.stringify(postData)
-    const endPoint = `${Utils.getApiUrlBase()}${Const.API.CREATE_NEW_GROUP}`
-    const options = {
+
+    const successCallBack = (response): void => {
+      // localStrageにgroup.uidを保存する
+      const groupId: string = response.group.id
+      router.push(`/group/${groupId}`)
+    }
+
+    const failedCallBack = (): void => {}
+
+    Utils.createRequest({
+      endPoint: Const.API.CREATE_NEW_GROUP_PATH,
+      data: postData,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSONdata,
-    }
-
-    console.log(`endPoint: ${endPoint}`)
-    console.log(`options.method: ${options.method}`)
-    console.log(`options.headers: ${JSON.stringify(options.headers)}`)
-    console.log(`options.body: ${options.body}`)
-
-    const res = await fetch(endPoint, {
-      method: options.method,
-      headers: options.headers,
-      body: options.body,
+      successCallBack: successCallBack,
+      failedCallback: failedCallBack,
     })
-    const result = await res.json()
-    if (result.success) {
-      console.log('result: success!')
-      console.log({ result })
-    } else {
-      console.log('result: failure!')
-    }
   }
 
   const renderFormErrorMessage = (message: string) => {
