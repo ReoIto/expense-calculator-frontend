@@ -1,7 +1,8 @@
+import { NextPage } from 'next'
 import NewGroupForm from '@/components/NewGroupForm'
 import { Container, Center } from '@chakra-ui/react'
 
-const New = () => {
+const New: NextPage = () => {
   return (
     <Container alignItems="center">
       <Center color="text" fontSize="lg">

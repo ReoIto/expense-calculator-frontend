@@ -61,9 +61,11 @@ const NewGroupForm = () => {
     }
 
     const successCallBack = (response): void => {
-      // localStrageにgroup.uidを保存する
       const groupId: string = response.group.id
-      router.push(`/group/${groupId}`)
+      // localStorageに作成したグループのidを保存する
+      // localStorage.setItem('lastUsedGroupId', groupId)
+      // localStorage.setItem('groups', groupId)
+      router.push(`${Const.API.SHOW_GROUP_PATH.replace(':id', groupId)}`)
     }
 
     const failedCallBack = (): void => {}
@@ -183,7 +185,7 @@ const NewGroupForm = () => {
         type="submit"
         size="lg"
       >
-        グループを決定する
+        グループを作成する
       </Button>
     </form>
   )

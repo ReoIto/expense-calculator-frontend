@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { Box, Center, Container, Heading, Text } from '@chakra-ui/react'
 import Const from '@/utils/constants'
 import Utils from '@/utils/utils'
@@ -13,7 +13,7 @@ type Props = {
   }[]
 }
 
-const Group = (props: Props) => {
+const Group: NextPage<Props> = (props: Props) => {
   return (
     <Container color="text">
       <Center my={4}>
