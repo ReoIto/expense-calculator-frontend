@@ -35,18 +35,20 @@ export default Group
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { groupId } = context.query
-  const endPoint = `${Utils.getApiUrlBase()}${Const.API.SHOW_GROUP_PATH.replace(
+  const endPoint: string = Const.API.SHOW_GROUP_PATH.replace(
     ':id',
     groupId.toString(),
-  )}`
-  const res = await fetch(endPoint)
-  const data = await res.json()
+  )
+  const resultJson = await Utils.createRequest({
+    endPoint: endPoint,
+    method: 'GET',
+  })
   const props = {
     group: {
-      name: data.group.name,
-      description: data.group.description,
+      name: resultJson.group.name,
+      description: resultJson.group.description,
     },
-    users: data.users,
+    users: resultJson.users,
   }
 
   return {
