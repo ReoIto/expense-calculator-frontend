@@ -51,7 +51,7 @@ const NewGroupForm = () => {
     }
   })
 
-  const onSubmit: SubmitHandler<InputValues> = (data) => {
+  const onSubmit: SubmitHandler<InputValues> = async (data) => {
     const postData: InputValues = {
       group: {
         name: data.group.name,
@@ -60,23 +60,20 @@ const NewGroupForm = () => {
       users: data.users,
     }
 
-    const successCallBack = (response): void => {
-      const groupId: string = response.group.id
+    try {
+      const resultJson = await Utils.createRequest({
+        endPoint: Const.API.CREATE_NEW_GROUP_PATH,
+        data: postData,
+        method: 'POST',
+      })
+      const groupId: string = resultJson.group.id
       // localStorageに作成したグループのidを保存する
       // localStorage.setItem('lastUsedGroupId', groupId)
       // localStorage.setItem('groups', groupId)
       router.push(`${Const.FRONT.SHOW_GROUP_PATH.replace(':id', groupId)}`)
+    } catch (err) {
+      console.error({ err })
     }
-
-    const failedCallBack = (): void => {}
-
-    Utils.createRequest({
-      endPoint: Const.API.CREATE_NEW_GROUP_PATH,
-      data: postData,
-      method: 'POST',
-      successCallBack: successCallBack,
-      failedCallback: failedCallBack,
-    })
   }
 
   const renderFormErrorMessage = (message: string) => {

@@ -7,13 +7,7 @@ const Utils = {
     }
   },
 
-  createRequest({
-    endPoint,
-    data,
-    method,
-    successCallBack = null,
-    failedCallback = null,
-  }) {
+  async createRequest({ endPoint, data = null, method }) {
     const JSONdata = JSON.stringify(data)
     const url = `${Utils.getApiUrlBase()}${endPoint}`
     const options = {
@@ -24,33 +18,21 @@ const Utils = {
       body: JSONdata,
     }
 
-    fetch(url, {
-      method: options.method,
-      headers: options.headers,
-      body: options.body,
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (typeof successCallBack === 'function') {
-          successCallBack(result)
-        }
+    let response
+    if (options.body === 'null') {
+      response = await fetch(url, {
+        method: options.method,
+        headers: options.headers,
       })
-      .catch((err) => {
-        this.handleApiError(err, failedCallback)
+    } else {
+      response = await fetch(url, {
+        method: options.method,
+        headers: options.headers,
+        body: options.body,
       })
-  },
-
-  handleApiError(err, failedCallback = null) {
-    const { response } = err
-    if (!response) {
-      throw err
     }
 
-    if (failedCallback) {
-      failedCallback(response.data, response.status)
-    }
-
-    console.error(err)
+    return response.json()
   },
 }
 
