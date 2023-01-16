@@ -51,7 +51,7 @@ const NewGroupForm = () => {
     }
   })
 
-  const onSubmit: SubmitHandler<InputValues> = async (data) => {
+  const onSubmit: SubmitHandler<InputValues> = (data) => {
     const postData: InputValues = {
       group: {
         name: data.group.name,
@@ -65,7 +65,7 @@ const NewGroupForm = () => {
       // localStorageに作成したグループのidを保存する
       // localStorage.setItem('lastUsedGroupId', groupId)
       // localStorage.setItem('groups', groupId)
-      router.push(`${Const.API.SHOW_GROUP_PATH.replace(':id', groupId)}`)
+      router.push(`${Const.FRONT.SHOW_GROUP_PATH.replace(':id', groupId)}`)
     }
 
     const failedCallBack = (): void => {}
