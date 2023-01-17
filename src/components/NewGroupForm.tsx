@@ -15,7 +15,6 @@ import Utils from '@/utils/utils'
 import Const from '@/utils/constants'
 
 const NewGroupForm = () => {
-  const router = useRouter()
   type InputValues = {
     group: {
       name: string
@@ -25,6 +24,7 @@ const NewGroupForm = () => {
       name: string
     }[]
   }
+  const router = useRouter()
 
   const {
     register,
@@ -66,11 +66,26 @@ const NewGroupForm = () => {
         data: postData,
         method: 'POST',
       })
-      const groupId: string = resultJson.group.id
-      // localStorageに作成したグループのidを保存する
-      // localStorage.setItem('lastUsedGroupId', groupId)
-      // localStorage.setItem('groups', groupId)
-      router.push(`${Const.FRONT.SHOW_GROUP_PATH.replace(':id', groupId)}`)
+
+      const newGroup: {
+        id: string
+        name: string
+        description: string
+        formattedCreatedAt: string
+      } = {
+        id: resultJson.group.id,
+        name: resultJson.group.name,
+        description: resultJson.group.description,
+        formattedCreatedAt: resultJson.group.created_at,
+      }
+
+      let groups = JSON.parse(localStorage.getItem('groups'))
+      if (groups === null) {
+        groups = []
+      }
+      groups.push(newGroup)
+      localStorage.setItem('groups', JSON.stringify(groups))
+      router.push(`${Const.FRONT.SHOW_GROUP_PATH.replace(':id', newGroup.id)}`)
     } catch (err) {
       console.error({ err })
     }
