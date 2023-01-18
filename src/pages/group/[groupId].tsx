@@ -1,4 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next'
+import axios from 'axios'
 import { Box, Center, Container, Heading, Text } from '@chakra-ui/react'
 import Const from '@/utils/constants'
 import Utils from '@/utils/utils'
@@ -39,19 +40,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     ':id',
     groupId.toString(),
   )
-  const resultJson = await Utils.createRequest({
-    endPoint: endPoint,
-    method: 'GET',
-  })
-  const props = {
-    group: {
-      name: resultJson.group.name,
-      description: resultJson.group.description,
-    },
-    users: resultJson.users,
-  }
+  const url: string = `${Utils.getApiUrlBase()}${endPoint}`
+  try {
+    const responseJson = await axios.get(url)
+    const props = {
+      group: {
+        name: responseJson.data.group.name,
+        description: responseJson.data.group.description,
+      },
+      users: responseJson.data.users,
+    }
 
-  return {
-    props: props,
+    return {
+      props: props,
+    }
+  } catch (error) {
+    return {
+      notFound: true,
+    }
   }
 }
