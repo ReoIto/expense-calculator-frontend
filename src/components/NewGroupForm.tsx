@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import axios from 'axios'
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
 import { FormErrorMessage } from '@chakra-ui/react'
 import {
@@ -9,10 +10,13 @@ import {
   Box,
   InputGroup,
   IconButton,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import Utils from '@/utils/utils'
 import Const from '@/utils/constants'
+import { useState } from 'react'
 
 const NewGroupForm = () => {
   type InputValues = {
@@ -24,7 +28,16 @@ const NewGroupForm = () => {
       name: string
     }[]
   }
+
+  type GroupInfo = {
+    id: string
+    name: string
+    description: string
+    formattedCreatedAt: string
+  }
+
   const router = useRouter()
+  const [errorMessage, setErrorMessage] = useState('')
 
   const {
     register,
@@ -51,7 +64,7 @@ const NewGroupForm = () => {
     }
   })
 
-  const onSubmit: SubmitHandler<InputValues> = async (data) => {
+  const onSubmit: SubmitHandler<InputValues> = (data): void => {
     const postData: InputValues = {
       group: {
         name: data.group.name,
@@ -60,23 +73,12 @@ const NewGroupForm = () => {
       users: data.users,
     }
 
-    try {
-      const resultJson = await Utils.createRequest({
-        endPoint: Const.API.CREATE_NEW_GROUP_PATH,
-        data: postData,
-        method: 'POST',
-      })
-
-      const newGroup: {
-        id: string
-        name: string
-        description: string
-        formattedCreatedAt: string
-      } = {
-        id: resultJson.group.id,
-        name: resultJson.group.name,
-        description: resultJson.group.description,
-        formattedCreatedAt: resultJson.group.created_at,
+    const successCallback = (responseJson): void => {
+      const newGroup: GroupInfo = {
+        id: responseJson.group.id,
+        name: responseJson.group.name,
+        description: responseJson.group.description,
+        formattedCreatedAt: responseJson.group.created_at,
       }
 
       let groups = JSON.parse(localStorage.getItem('groups'))
@@ -86,9 +88,19 @@ const NewGroupForm = () => {
       groups.push(newGroup)
       localStorage.setItem('groups', JSON.stringify(groups))
       router.push(`${Const.FRONT.SHOW_GROUP_PATH.replace(':id', newGroup.id)}`)
-    } catch (err) {
-      console.error({ err })
     }
+
+    const failedCallback = (responseJson): void => {
+      const { errors } = responseJson
+      setErrorMessage(errors)
+    }
+
+    const request = axios({
+      method: 'POST',
+      url: `${Utils.getApiUrlBase()}${Const.API.CREATE_NEW_GROUP_PATH}`,
+      data: postData,
+    })
+    Utils.createRequest(request, successCallback, failedCallback)
   }
 
   const renderFormErrorMessage = (message: string) => {
@@ -97,6 +109,14 @@ const NewGroupForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {errorMessage && (
+        <Box my={6}>
+          <Alert status="error" variant="left-accent">
+            <AlertIcon />
+            {errorMessage}
+          </Alert>
+        </Box>
+      )}
       <FormControl isInvalid={errors.group?.name && true} color="text">
         <FormLabel htmlFor="group.name">グループ名</FormLabel>
         <Input
