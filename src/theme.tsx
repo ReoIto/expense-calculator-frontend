@@ -16,6 +16,14 @@ const theme = extendTheme({
         default: '#16161D',
         _dark: '#ade3b8',
       },
+      containerBgColor: {
+        default: '#f8fafb',
+        _dark: '#42415c',
+      },
+      headerTitle: {
+        default: '#f5f5fe',
+        _dark: '#42415c',
+      },
       heroGradientStart: {
         default: '#7928CA',
         _dark: '#e3a7f9',
@@ -31,6 +39,7 @@ const theme = extendTheme({
   },
   colors: {
     black: '#16161D',
+    headerBgColor: '#6c6cfb',
   },
   fonts,
   breakpoints,

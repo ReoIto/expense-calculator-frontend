@@ -1,6 +1,3 @@
-import { useRouter } from 'next/router'
-import Const from './constants'
-
 const Utils = {
   getApiUrlBase() {
     if (process.env.NODE_ENV === 'production') {
@@ -32,7 +29,6 @@ const Utils = {
 
     if (failedCallback) {
       failedCallback(response.data, response.status)
-      return
     }
 
     // if (response.status === 404) {

@@ -1,29 +1,20 @@
 import { FC } from 'react'
 import NextLink from 'next/link'
-import {
-  Box,
-  Container,
-  Flex,
-  Link as ChakraLink,
-  Spacer,
-  Text,
-} from '@chakra-ui/react'
+import { Box, Flex, Link as ChakraLink, Spacer, Text } from '@chakra-ui/react'
 import { DarkModeSwitch } from './DarkModeSwitch'
 
 export const Header: FC = () => {
   return (
-    <Container>
-      <Flex as="header" py={4}>
-        <Box p={2}>
-          <ChakraLink as={NextLink} href="/" color="text">
-            <Text color="text" fontSize="3xl">
-              WARI PAY
-            </Text>
-          </ChakraLink>
-        </Box>
+    <Box as="header" p={4} mb={4} bgColor="headerBgColor" boxShadow="xl">
+      <Flex>
+        <ChakraLink as={NextLink} href="/" color="text">
+          <Text color="headerTitle" fontSize="3xl">
+            WARI PAY
+          </Text>
+        </ChakraLink>
         <Spacer />
         <DarkModeSwitch />
       </Flex>
-    </Container>
+    </Box>
   )
 }
