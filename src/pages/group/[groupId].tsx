@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next'
 import axios from 'axios'
-import { Box, Center, Container, Heading, Text } from '@chakra-ui/react'
+import { Box, Center, Container, Heading, HStack, Text } from '@chakra-ui/react'
 import Const from '@/utils/constants'
 import Utils from '@/utils/utils'
 
@@ -23,11 +23,11 @@ const Group: NextPage<Props> = (props: Props) => {
       <Center>
         <Text>{props?.group?.description}</Text>
       </Center>
-      <Box>
-        {props.users.map((user, i) => {
-          return <p key={i}>{user.name}</p>
+      <HStack justifyContent="center" mx="4">
+        {props.users.map((user) => {
+          return <Box key={user.name}>{user.name}</Box>
         })}
-      </Box>
+      </HStack>
     </Container>
   )
 }
