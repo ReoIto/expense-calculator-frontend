@@ -211,8 +211,7 @@ const NewGroupForm = () => {
         mt={16}
         p={7}
         width="full"
-        colorScheme="teal"
-        variant="outline"
+        colorScheme="purple"
         isLoading={isSubmitting}
         type="submit"
         size="lg"

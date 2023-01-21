@@ -5,7 +5,7 @@ import { DarkModeSwitch } from './DarkModeSwitch'
 
 export const Header: FC = () => {
   return (
-    <Box as="header" p={4} mb={4} bgColor="headerBgColor" boxShadow="xl">
+    <Box as="header" p={4} mb={4} bgColor="purple.500" boxShadow="xl">
       <Flex>
         <ChakraLink as={NextLink} href="/" color="text">
           <Text color="headerTitle" fontSize="3xl">

@@ -9,7 +9,7 @@ import { Box } from '@chakra-ui/react'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Box height="100vh" bgColor="containerBgColor">
+      <Box height="100vh" bgColor="outOfContainerBgColor">
         <Header />
         <Component {...pageProps} />
       </Box>

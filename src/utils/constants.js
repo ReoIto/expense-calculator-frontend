@@ -5,6 +5,7 @@ const Const = {
   },
   FRONT: {
     SHOW_GROUP_PATH: '/group/:id',
+    NEW_EXPENSE_PATH: '/group/:id/expenses/new',
   },
 }
 
