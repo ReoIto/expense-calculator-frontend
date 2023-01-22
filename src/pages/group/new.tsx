@@ -5,7 +5,7 @@ import { Container, Center } from '@chakra-ui/react'
 const New: NextPage = () => {
   return (
     <Container alignItems="center">
-      <Center color="text" fontSize="lg">
+      <Center color="text" fontSize="xl" fontWeight="semibold">
         新規グループ作成
       </Center>
       <NewGroupForm />
