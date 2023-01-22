@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import axios from 'axios'
 import {
+  useColorModeValue,
   Link as ChakraLink,
   Box,
   Card,
@@ -32,10 +33,11 @@ const Group: NextPage<Props> = (props: Props) => {
     ':id',
     router.query.groupId.toString(),
   )
+  const bgColorMode = useColorModeValue('purple.100', 'purple.500')
 
   return (
     <Container color="text">
-      <Card bgColor="purple.100">
+      <Card bgColor={bgColorMode}>
         <CardHeader>
           <Heading size="xl">{props?.group?.name}</Heading>
           <Box as="span" color="gray.500">
@@ -71,11 +73,8 @@ const Group: NextPage<Props> = (props: Props) => {
 export default Group
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { groupId } = context.query
-  const endPoint: string = Const.API.SHOW_GROUP_PATH.replace(
-    ':id',
-    groupId.toString(),
-  )
+  const groupId: string = context.query.groupId.toString()
+  const endPoint: string = Const.API.SHOW_GROUP_PATH.replace(':id', groupId)
   const url: string = `${Utils.getApiUrlBase()}${endPoint}`
   try {
     const responseJson = await axios.get(url)
