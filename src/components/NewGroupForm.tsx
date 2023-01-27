@@ -1,8 +1,9 @@
+import { FC, useState } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
-import { FormErrorMessage } from '@chakra-ui/react'
 import {
+  FormErrorMessage,
   FormLabel,
   FormControl,
   Input,
@@ -16,26 +17,25 @@ import {
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import Utils from '@/utils/utils'
 import Const from '@/utils/constants'
-import { useState } from 'react'
 
-const NewGroupForm = () => {
-  type InputValues = {
-    group: {
-      name: string
-      description: string
-    }
-    users: {
-      name: string
-    }[]
-  }
-
-  type GroupInfo = {
-    id: string
+type InputValues = {
+  group: {
     name: string
     description: string
-    formattedCreatedAt: string
   }
+  users: {
+    name: string
+  }[]
+}
 
+type GroupInfo = {
+  id: string
+  name: string
+  description: string
+  formattedCreatedAt: string
+}
+
+const NewGroupForm: FC = () => {
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -213,6 +213,7 @@ const NewGroupForm = () => {
         width="full"
         colorScheme="purple"
         isLoading={isSubmitting}
+        isDisabled={isSubmitting}
         type="submit"
         size="lg"
       >
