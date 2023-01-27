@@ -1,10 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next'
-import { useRouter } from 'next/router'
-import NextLink from 'next/link'
 import axios from 'axios'
 import {
   useColorModeValue,
-  Link as ChakraLink,
   Box,
   Card,
   CardBody,
@@ -13,9 +10,11 @@ import {
   Heading,
   HStack,
   Button,
+  useDisclosure,
 } from '@chakra-ui/react'
 import Const from '@/utils/constants'
 import Utils from '@/utils/utils'
+import CreateExpenseRecordModal from '@/components/modals/CreateExpenseRecordModal'
 
 type Props = {
   group: {
@@ -23,17 +22,16 @@ type Props = {
     description: string
   }
   users: {
+    id: string
     name: string
+    created_at: string
+    updated_at: string
   }[]
 }
 
-const Group: NextPage<Props> = (props: Props) => {
-  const router = useRouter()
-  const newExpensePagePath = Const.FRONT.NEW_EXPENSE_PATH.replace(
-    ':id',
-    router.query.groupId.toString(),
-  )
+const Group: NextPage<Props> = (props) => {
   const bgColorMode = useColorModeValue('purple.100', 'purple.500')
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <Container color="text">
@@ -52,20 +50,22 @@ const Group: NextPage<Props> = (props: Props) => {
           </HStack>
         </CardBody>
       </Card>
-      <Box color="text">
-        <ChakraLink as={NextLink} href={newExpensePagePath}>
-          <Button
-            p={7}
-            my={4}
-            width="full"
-            colorScheme="purple"
-            variant="outline"
-            rounded="button"
-          >
-            立替え記録を追加する
-          </Button>
-        </ChakraLink>
-      </Box>
+      <Button
+        onClick={onOpen}
+        p={7}
+        my={4}
+        width="full"
+        colorScheme="purple"
+        variant="outline"
+        rounded="button"
+      >
+        立替え記録を追加する
+      </Button>
+      <CreateExpenseRecordModal
+        isOpen={isOpen}
+        onClose={onClose}
+        users={props.users}
+      />
     </Container>
   )
 }
