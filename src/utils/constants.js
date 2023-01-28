@@ -2,6 +2,7 @@ const Const = {
   API: {
     CREATE_NEW_GROUP_PATH: '/groups',
     SHOW_GROUP_PATH: '/groups/:id',
+    CREATE_EXPENSE_RECORD_PATH: '/expenses',
   },
   FRONT: {
     SHOW_GROUP_PATH: '/group/:id',
