@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import axios from 'axios'
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
+import Utils from '@/utils/utils'
+import Const from '@/utils/constants'
 import {
   FormErrorMessage,
   FormLabel,
@@ -11,10 +14,18 @@ import {
   Select,
   Checkbox,
   CheckboxGroup,
+  Input,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 
 type Props = {
   users: Users
+  closeModal(): 'function'
 }
 
 type Users = {
@@ -28,13 +39,14 @@ type InputValues = {
   payer: {
     id: string
     expenseReason: string
-    paymentMethod: string
+    paymentAmount: number
+    // paymentMethod: string
   }
   payeeIds: string[]
 }
 
-const CreateExpenseRecordForm = (props: Props) => {
-  const { users } = props
+const CreateExpenseRecordForm = ({ users, closeModal }: Props) => {
+  const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
   const {
     register,
@@ -44,30 +56,32 @@ const CreateExpenseRecordForm = (props: Props) => {
   } = useForm<InputValues>()
 
   const onSubmit: SubmitHandler<InputValues> = (data): void => {
-    const postData: InputValues = {
+    const postData = {
+      groupId: router.query.groupId,
       payer: {
         id: data.payer.id,
         expenseReason: data.payer.expenseReason,
-        paymentMethod: data.payer.paymentMethod,
+        paymentAmount: data.payer.paymentAmount,
+        // paymentMethod: data.payer.paymentMethod,
       },
       payeeIds: data.payeeIds,
     }
 
-    console.log(postData)
-
-    const successCallback = (responseJson): void => {}
-
-    const failedCallback = (responseJson): void => {
-      // const { errors } = responseJson
-      // setErrorMessage(errors)
+    const successCallback = (responseJson): void => {
+      closeModal()
     }
 
-    // const request = axios({
-    //   method: 'POST',
-    //   url: `${Utils.getApiUrlBase()}${Const.API.CreateExpenseRecordPath}`,
-    //   data: postData,
-    // })
-    // Utils.createRequest(request, successCallback, failedCallback)
+    const failedCallback = (responseJson): void => {
+      const { errors } = responseJson
+      setErrorMessage(errors)
+    }
+
+    const request = axios({
+      method: 'POST',
+      url: `${Utils.getApiUrlBase()}${Const.API.CREATE_EXPENSE_RECORD_PATH}`,
+      data: postData,
+    })
+    Utils.createRequest(request, successCallback, failedCallback)
   }
 
   const renderFormErrorMessage = (message: string) => {
@@ -84,8 +98,8 @@ const CreateExpenseRecordForm = (props: Props) => {
           </Alert>
         </Box>
       )}
-      <FormControl isInvalid={errors.payer && true} color="text">
-        <Select {...register('payer.id')}>
+      <FormControl isInvalid={errors.payer?.id && true} color="text">
+        <Select {...register('payer.id')} id="payer.id">
           {users.map((user) => (
             <option value={user.id} key={`payer-${user.id}`}>
               {user.name}
@@ -95,13 +109,23 @@ const CreateExpenseRecordForm = (props: Props) => {
         <FormLabel htmlFor="payer.id">が</FormLabel>
       </FormControl>
 
-      <FormControl>
+      <FormControl isInvalid={errors.payeeIds && true} color="text">
         <Controller
           name="payeeIds"
           control={control}
+          // defaultValueが正しく効いてないからvaluesがnullになってしまう
+          // rules={{
+          //   validate: {
+          //     greaterThanZero: (values) => values.length > 0,
+          //   },
+          // }}
           render={({ field: { ref, ...rest } }) => (
-            <CheckboxGroup {...rest} colorScheme="purple">
-              {props.users.map((payee) => {
+            <CheckboxGroup
+              {...rest}
+              colorScheme="purple"
+              defaultValue={users.map((user) => user.id)}
+            >
+              {users.map((payee) => {
                 return (
                   <Checkbox name="payeeIds" key={payee.id} value={payee.id}>
                     {payee.name}
@@ -111,6 +135,47 @@ const CreateExpenseRecordForm = (props: Props) => {
             </CheckboxGroup>
           )}
         />
+        {/* {errors.payeeIds?.type === 'greaterThanZero' &&
+          renderFormErrorMessage('1人以上選択してください')} */}
+        <FormLabel htmlFor="payeeIds">の</FormLabel>
+      </FormControl>
+
+      <FormControl isInvalid={errors.payer?.expenseReason && true} color="text">
+        <Input
+          id="payer.expenseReason"
+          placeholder="例）チケット代"
+          {...register('payer.expenseReason', {
+            required: '入力は必須です',
+            maxLength: {
+              value: 20,
+              message: '20文字以内で入力してください',
+            },
+          })}
+        ></Input>
+        {errors.payer?.expenseReason &&
+          renderFormErrorMessage(errors.payer.expenseReason.message.toString())}
+        <FormLabel htmlFor="payer.expenseReason">を支払って</FormLabel>
+      </FormControl>
+
+      <FormControl isInvalid={errors.payer?.paymentAmount && true} color="text">
+        <Controller
+          name="payer.paymentAmount"
+          control={control}
+          rules={{ required: true, maxLength: 8 }}
+          render={({ field }) => (
+            <NumberInput {...field}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          )}
+        ></Controller>
+        {errors.payer?.paymentAmount?.type === 'required'
+          ? renderFormErrorMessage('入力は必須です')
+          : renderFormErrorMessage('8文字以下の半角数字で入力してください')}
+        <FormLabel htmlFor="payer.paymentAmount">円かかった</FormLabel>
       </FormControl>
 
       <Button

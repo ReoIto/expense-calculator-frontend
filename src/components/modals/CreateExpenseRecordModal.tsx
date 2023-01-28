@@ -14,7 +14,7 @@ const CreateExpenseRecordModal = ({ isOpen, onClose, users }) => {
       <ModalOverlay backdropFilter="blur(10px)" />
       <ModalContent mx={2}>
         <ModalBody>
-          <CreateExpenseRecordForm users={users} />
+          <CreateExpenseRecordForm users={users} closeModal={onClose} />
         </ModalBody>
         <ModalFooter pt={0}>
           <Button onClick={onClose}>キャンセル</Button>
