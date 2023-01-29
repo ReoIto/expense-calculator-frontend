@@ -53,7 +53,10 @@ const CreateExpenseRecordForm = ({ users, closeModal }: Props) => {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<InputValues>()
+  } = useForm<InputValues>({
+    // デフォルトで全員のチェックボックスにチェックが入るようにする
+    defaultValues: { payeeIds: users.map((user) => user.id) },
+  })
 
   const onSubmit: SubmitHandler<InputValues> = (data): void => {
     const postData = {
@@ -67,7 +70,7 @@ const CreateExpenseRecordForm = ({ users, closeModal }: Props) => {
       payeeIds: data.payeeIds,
     }
 
-    const successCallback = (responseJson): void => {
+    const successCallback = (): void => {
       closeModal()
     }
 
@@ -113,18 +116,13 @@ const CreateExpenseRecordForm = ({ users, closeModal }: Props) => {
         <Controller
           name="payeeIds"
           control={control}
-          // defaultValueが正しく効いてないからvaluesがnullになってしまう
-          // rules={{
-          //   validate: {
-          //     greaterThanZero: (values) => values.length > 0,
-          //   },
-          // }}
+          rules={{
+            validate: {
+              greaterThanZero: (values) => values.length > 0,
+            },
+          }}
           render={({ field: { ref, ...rest } }) => (
-            <CheckboxGroup
-              {...rest}
-              colorScheme="purple"
-              defaultValue={users.map((user) => user.id)}
-            >
+            <CheckboxGroup {...rest} colorScheme="purple">
               {users.map((payee) => {
                 return (
                   <Checkbox name="payeeIds" key={payee.id} value={payee.id}>
@@ -135,8 +133,8 @@ const CreateExpenseRecordForm = ({ users, closeModal }: Props) => {
             </CheckboxGroup>
           )}
         />
-        {/* {errors.payeeIds?.type === 'greaterThanZero' &&
-          renderFormErrorMessage('1人以上選択してください')} */}
+        {errors.payeeIds?.type === 'greaterThanZero' &&
+          renderFormErrorMessage('1人以上選択してください')}
         <FormLabel htmlFor="payeeIds">の</FormLabel>
       </FormControl>
 
